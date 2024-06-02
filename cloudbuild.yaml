@@ -1,12 +1,8 @@
 # cloudbuild.yaml
 
 steps:
-# Python アプリケーションのビルド
-- name: 'python:3.9'
-  entrypoint: 'bash'
-  args:
-  - '-c'
-  - |
-    pip install -r requirements.txt
-    # その他のビルド手順（必要に応じて追加）
-    gcloud app deploy app.yaml --quiet
+  # Install dependencies
+  - name: 'gcr.io/cloud-builders/gcloud'
+    args: ['app', 'deploy']
+
+timeout: '1600s'
