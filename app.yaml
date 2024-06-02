@@ -1,6 +1,6 @@
 # app.yaml
 
-runtime: python39
+runtime: python3.9
 
 entrypoint: gunicorn -b :$PORT main:app
 
