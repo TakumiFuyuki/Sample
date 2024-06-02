@@ -10,10 +10,3 @@ steps:
     pip install -r requirements.txt
     # その他のビルド手順（必要に応じて追加）
     gcloud app deploy app.yaml --quiet
-
-# 任意：成功時の通知設定
-notifications:
-  - name: 'gcr.io/cloud-builders/slack'
-    args:
-      - '--slack_webhook_url=<Your_Slack_Webhook_URL>'
-      - '--message=Build succeeded! Cloud Build finished successfully.'
