@@ -1,0 +1,17 @@
+# app.yaml
+
+runtime: python39
+
+# 任意: リクエストの終了後にインスタンスを停止する設定
+automatic_scaling:
+  min_instances: 1
+  max_instances: 10
+  min_pending_latency: 30ms
+  max_pending_latency: automatic
+
+handlers:
+- url: /.*
+  script: auto
+
+# 任意: サービスの名前を指定する場合
+# service: <Your_Service_Name>
