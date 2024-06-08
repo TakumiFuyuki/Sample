@@ -17,11 +17,15 @@ def index():
 
 @app.route('/registration', methods=['POST'])
 def registration():
-    button_time = datetime.now()
-    id = request.form['email']
-    password = request.form['password']
-    insert_registration_to_bigquery(button_time, id, password)
-    return '登録が完了しました'
+    try:
+        button_time = datetime.now()
+        id = request.form['email']
+        password = request.form['password']
+        insert_registration_to_bigquery(button_time, id, password)
+        return '登録が完了しました'
+    except Exception as e:
+        return f'エラーが発生しました: {e}', 500
+
 
 def insert_registration_to_bigquery(id, button_time, password):
     button_time_iso = button_time.isoformat()
