@@ -6,10 +6,10 @@ from datetime import datetime
 
 app = Flask(__name__)
 
-client = bigquery.Client()
+# client = bigquery.Client()
 
-dataset_name = 'my-project-sample-425203.dataset'
-registration_table = 'registration'
+# dataset_name = 'my-project-sample-425203.dataset'
+# registration_table = 'registration'
 
 @app.route('/')
 def index():
