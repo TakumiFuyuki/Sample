@@ -21,7 +21,7 @@ def registration():
         button_time = datetime.now()
         id = request.form['email']
         password = request.form['password']
-        insert_registration_to_bigquery(button_time, id, password)
+        insert_registration_to_bigquery(id, button_time, password)
         return '登録が完了しました'
     except Exception as e:
         return f'エラーが発生しました: {e}', 500
