@@ -25,6 +25,8 @@ def registration():
         button_time = datetime.now()
         id = request.form['email']
         password = request.form['password']
+        if is_id_registered(id):
+            return 'このメールアドレスは既に登録されています。', 400
         insert_registration_to_bigquery(id, button_time, password)
         return '登録が完了しました'
     except Exception as e:
@@ -32,9 +34,9 @@ def registration():
 
 @app.route('/login', methods=['POST'])
 def login():
-    email = request.form['email']
+    id = request.form['email']
     password = request.form['password']
-    if authenticate_user(email, password):
+    if authenticate_user(id, password):
         return 'ログインに成功しました'
     else:
         return 'ログインに失敗しました', 401
@@ -53,16 +55,28 @@ def insert_registration_to_bigquery(id, button_time, password):
     if errors:
         raise Exception(f'BigQueryへのデータ挿入中にエラーが発生しました: {errors}')
 
-def authenticate_user(email, password):
+def authenticate_user(id, password):
     query = f"""
     SELECT pass FROM `{dataset_name}.{registration_table}`
-    WHERE id = '{email}'
+    WHERE id = '{id}'
     """
     query_job = client.query(query)
     results = query_job.result()
     for row in results:
         if row['pass'] == password:
             return True
+    return False
+
+def is_id_registered(id):
+    query = f"""
+    SELECT id FROM `{dataset_name}.{registration_table}`
+    WHERE id = '{id}'
+    """
+    query_job = client.query(query)
+    results = query_job.result()
+
+    for row in results:
+        return True
     return False
 
 if __name__ == '__main__':
