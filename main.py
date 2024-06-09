@@ -15,73 +15,73 @@ registration_table = 'registration'
 def index():
     return render_template('index.html')
 
-@app.route('/registration')
-def index():
-    return render_template('registration.html')
+# @app.route('/registration')
+# def index():
+#     return render_template('registration.html')
 
-@app.route('/registration', methods=['POST'])
-def registration():
-    try:
-        button_time = datetime.now()
-        id = request.form['email']
-        password = request.form['password']
-        if is_id_registered(id):
-            return 'このメールアドレスは既に登録されています。', 400
-        insert_registration_to_bigquery(id, button_time, password)
-        return '登録が完了しました'
-    except Exception as e:
-        return f'エラーが発生しました: {e}', 500
+# @app.route('/registration', methods=['POST'])
+# def registration():
+#     try:
+#         button_time = datetime.now()
+#         id = request.form['email']
+#         password = request.form['password']
+#         if is_id_registered(id):
+#             return 'このメールアドレスは既に登録されています。', 400
+#         insert_registration_to_bigquery(id, button_time, password)
+#         return '登録が完了しました'
+#     except Exception as e:
+#         return f'エラーが発生しました: {e}', 500
 
-def insert_registration_to_bigquery(id, button_time, password):
-    button_time_iso = button_time.isoformat()
-    rows_to_insert = [
-        {
-            'id': id,
-            'datetime': button_time_iso,
-            'pass': password
-        }
-    ]
-    table_id = f'{dataset_name}.{registration_table}'
-    errors = client.insert_rows_json(table_id, rows_to_insert)
-    if errors:
-        raise Exception(f'BigQueryへのデータ挿入中にエラーが発生しました: {errors}')
+# def insert_registration_to_bigquery(id, button_time, password):
+#     button_time_iso = button_time.isoformat()
+#     rows_to_insert = [
+#         {
+#             'id': id,
+#             'datetime': button_time_iso,
+#             'pass': password
+#         }
+#     ]
+#     table_id = f'{dataset_name}.{registration_table}'
+#     errors = client.insert_rows_json(table_id, rows_to_insert)
+#     if errors:
+#         raise Exception(f'BigQueryへのデータ挿入中にエラーが発生しました: {errors}')
 
-def is_id_registered(id):
-    query = f"""
-    SELECT id FROM `{dataset_name}.{registration_table}`
-    WHERE id = '{id}'
-    """
-    query_job = client.query(query)
-    results = query_job.result()
+# def is_id_registered(id):
+#     query = f"""
+#     SELECT id FROM `{dataset_name}.{registration_table}`
+#     WHERE id = '{id}'
+#     """
+#     query_job = client.query(query)
+#     results = query_job.result()
 
-    for row in results:
-        return True
-    return False
+#     for row in results:
+#         return True
+#     return False
 
-@app.route('/login')
-def login_page():
-    return render_template('login.html')
+# @app.route('/login')
+# def login_page():
+#     return render_template('login.html')
 
-@app.route('/login', methods=['POST'])
-def login():
-    id = request.form['email']
-    password = request.form['password']
-    if authenticate_user(id, password):
-        return 'ログインに成功しました'
-    else:
-        return 'ログインに失敗しました', 401
+# @app.route('/login', methods=['POST'])
+# def login():
+#     id = request.form['email']
+#     password = request.form['password']
+#     if authenticate_user(id, password):
+#         return 'ログインに成功しました'
+#     else:
+#         return 'ログインに失敗しました', 401
 
-def authenticate_user(id, password):
-    query = f"""
-    SELECT pass FROM `{dataset_name}.{registration_table}`
-    WHERE id = '{id}'
-    """
-    query_job = client.query(query)
-    results = query_job.result()
-    for row in results:
-        if row['pass'] == password:
-            return True
-    return False
+# def authenticate_user(id, password):
+#     query = f"""
+#     SELECT pass FROM `{dataset_name}.{registration_table}`
+#     WHERE id = '{id}'
+#     """
+#     query_job = client.query(query)
+#     results = query_job.result()
+#     for row in results:
+#         if row['pass'] == password:
+#             return True
+#     return False
 
 if __name__ == '__main__':
     app.run(host='127.0.0.1', port=8080, debug=True)
