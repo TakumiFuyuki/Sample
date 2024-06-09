@@ -13,11 +13,11 @@ registration_table = 'registration'
 
 @app.route('/')
 def index():
-    return render_template('registration.html')
+    return render_template('index.html')
 
-@app.route('/login')
-def login_page():
-    return render_template('login.html')
+@app.route('/registration')
+def index():
+    return render_template('registration.html')
 
 @app.route('/registration', methods=['POST'])
 def registration():
@@ -31,15 +31,6 @@ def registration():
         return '登録が完了しました'
     except Exception as e:
         return f'エラーが発生しました: {e}', 500
-
-@app.route('/login', methods=['POST'])
-def login():
-    id = request.form['email']
-    password = request.form['password']
-    if authenticate_user(id, password):
-        return 'ログインに成功しました'
-    else:
-        return 'ログインに失敗しました', 401
 
 def insert_registration_to_bigquery(id, button_time, password):
     button_time_iso = button_time.isoformat()
@@ -55,18 +46,6 @@ def insert_registration_to_bigquery(id, button_time, password):
     if errors:
         raise Exception(f'BigQueryへのデータ挿入中にエラーが発生しました: {errors}')
 
-def authenticate_user(id, password):
-    query = f"""
-    SELECT pass FROM `{dataset_name}.{registration_table}`
-    WHERE id = '{id}'
-    """
-    query_job = client.query(query)
-    results = query_job.result()
-    for row in results:
-        if row['pass'] == password:
-            return True
-    return False
-
 def is_id_registered(id):
     query = f"""
     SELECT id FROM `{dataset_name}.{registration_table}`
@@ -77,6 +56,31 @@ def is_id_registered(id):
 
     for row in results:
         return True
+    return False
+
+@app.route('/login')
+def login_page():
+    return render_template('login.html')
+
+@app.route('/login', methods=['POST'])
+def login():
+    id = request.form['email']
+    password = request.form['password']
+    if authenticate_user(id, password):
+        return 'ログインに成功しました'
+    else:
+        return 'ログインに失敗しました', 401
+
+def authenticate_user(id, password):
+    query = f"""
+    SELECT pass FROM `{dataset_name}.{registration_table}`
+    WHERE id = '{id}'
+    """
+    query_job = client.query(query)
+    results = query_job.result()
+    for row in results:
+        if row['pass'] == password:
+            return True
     return False
 
 if __name__ == '__main__':
