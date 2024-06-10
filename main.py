@@ -40,7 +40,7 @@ def registration():
         flash('登録が完了しました。ログインしてください。', 'success')
         return redirect(url_for('login_page'))
     except Exception as e:
-        flash(f'エラーが発生しました: {e}', 'error')
+        # flash(f'エラーが発生しました: {e}', 'error')
         return redirect(url_for('registration_page'))
 
 def validate_password(password):
