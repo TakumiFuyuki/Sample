@@ -53,7 +53,7 @@ def insert_registration_to_bigquery(email, button_time, password):
 def is_email_registered(email):
     query = f"""
     SELECT id FROM `{dataset_name}.{registration_table}`
-    WHERE id = '{id}'
+    WHERE id = '{email}'
     """
     query_job = client.query(query)
     results = query_job.result()
@@ -74,7 +74,7 @@ def login():
 def authenticate_user(email, password):
     query = f"""
     SELECT password FROM `{dataset_name}.{registration_table}`
-    WHERE id = '{id}'
+    WHERE id = '{email}'
     """
     query_job = client.query(query)
     results = query_job.result()
