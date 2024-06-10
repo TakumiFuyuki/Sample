@@ -26,7 +26,7 @@ def login_page():
 
 @app.route('/registration', methods=['POST'])
 def registration():
-    try:
+    # try:
         button_time = datetime.now()
         email = request.form['email']
         password = request.form['password']
@@ -39,9 +39,18 @@ def registration():
         insert_registration_to_bigquery(email, button_time, password)
         flash('登録が完了しました。ログインしてください。', 'success')
         return redirect(url_for('login_page'))
-    except Exception as e:
-        # flash(f'エラーが発生しました: {e}', 'error')
-        return redirect(url_for('registration_page'))
+    # except Exception as e:
+    #     flash(f'エラーが発生しました: {e}', 'error')
+    #     return redirect(url_for('registration_page'))
+
+@app.route('/login', methods=['POST'])
+def login():
+    email = request.form['email']
+    password = request.form['password']
+    if authenticate_user(email, password):
+        return 'ログインに成功しました'
+    else:
+        return 'ログインに失敗しました', 401
 
 def validate_password(password):
     if len(password) < 4:
@@ -76,15 +85,6 @@ def is_email_registered(email):
     for row in results:
         return True
     return False
-
-@app.route('/login', methods=['POST'])
-def login():
-    email = request.form['email']
-    password = request.form['password']
-    if authenticate_user(email, password):
-        return 'ログインに成功しました'
-    else:
-        return 'ログインに失敗しました', 401
 
 def authenticate_user(email, password):
     query = f"""
