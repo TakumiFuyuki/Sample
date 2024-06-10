@@ -15,9 +15,9 @@ registration_table = 'registration'
 def index():
     return render_template('index.html')
 
-# @app.route('/registration')
-# def index():
-#     return render_template('registration.html')
+@app.route('/registration')
+def index():
+    return render_template('registration.html')
 
 # @app.route('/registration', methods=['POST'])
 # def registration():
