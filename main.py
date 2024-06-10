@@ -31,7 +31,7 @@ def registration():
         email = request.form['email']
         password = request.form['password']
         if is_email_registered(email):
-            # flash('このメールアドレスは既に登録されています。', 'error')
+            flash('このメールアドレスは既に登録されています。')
             return redirect(url_for('registration_page'))
         if not validate_password(password):
             # flash('パスワードは4文字以上で、アルファベットと数字をそれぞれ少なくとも1文字含む必要があります。', 'error')
