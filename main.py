@@ -15,30 +15,30 @@ registration_table = 'registration'
 def index():
     return render_template('index.html')
 
-@app.route('/registration')
-def index():
-    return render_template('registration.html')
+# @app.route('/registration')
+# def index():
+#     return render_template('registration.html')
 
 # @app.route('/registration', methods=['POST'])
 # def registration():
 #     try:
 #         button_time = datetime.now()
-#         id = request.form['email']
+#         email = request.form['email']
 #         password = request.form['password']
-#         if is_id_registered(id):
+#         if is_email_registered(email):
 #             return 'このメールアドレスは既に登録されています。', 400
-#         insert_registration_to_bigquery(id, button_time, password)
+#         insert_registration_to_bigquery(email, button_time, password)
 #         return '登録が完了しました'
 #     except Exception as e:
 #         return f'エラーが発生しました: {e}', 500
 
-# def insert_registration_to_bigquery(id, button_time, password):
+# def insert_registration_to_bigquery(email, button_time, password):
 #     button_time_iso = button_time.isoformat()
 #     rows_to_insert = [
 #         {
-#             'id': id,
+#             'id': email,
 #             'datetime': button_time_iso,
-#             'pass': password
+#             'password': password
 #         }
 #     ]
 #     table_id = f'{dataset_name}.{registration_table}'
@@ -46,10 +46,10 @@ def index():
 #     if errors:
 #         raise Exception(f'BigQueryへのデータ挿入中にエラーが発生しました: {errors}')
 
-# def is_id_registered(id):
+# def is_email_registered(email):
 #     query = f"""
-#     SELECT id FROM `{dataset_name}.{registration_table}`
-#     WHERE id = '{id}'
+#     SELECT email FROM `{dataset_name}.{registration_table}`
+#     WHERE email = '{id}'
 #     """
 #     query_job = client.query(query)
 #     results = query_job.result()
@@ -58,28 +58,28 @@ def index():
 #         return True
 #     return False
 
-@app.route('/login')
-def login_page():
-    return render_template('login.html')
+# @app.route('/login')
+# def login_page():
+#     return render_template('login.html')
 
 # @app.route('/login', methods=['POST'])
 # def login():
-#     id = request.form['email']
+#     email = request.form['email']
 #     password = request.form['password']
-#     if authenticate_user(id, password):
+#     if authenticate_user(email, password):
 #         return 'ログインに成功しました'
 #     else:
 #         return 'ログインに失敗しました', 401
 
-# def authenticate_user(id, password):
+# def authenticate_user(email, password):
 #     query = f"""
-#     SELECT pass FROM `{dataset_name}.{registration_table}`
+#     SELECT password FROM `{dataset_name}.{registration_table}`
 #     WHERE id = '{id}'
 #     """
 #     query_job = client.query(query)
 #     results = query_job.result()
 #     for row in results:
-#         if row['pass'] == password:
+#         if row['password'] == password:
 #             return True
 #     return False
 
