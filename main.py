@@ -41,7 +41,7 @@ def registration():
         return redirect(url_for('login_page'))
     # except Exception as e:
     #     flash(f'エラーが発生しました: {e}', 'error')
-    #     return redirect(url_for('registration_page'))
+    #     return redirect(url_for('registration_page')) #ここでリダイレクトしている
 
 @app.route('/login', methods=['POST'])
 def login():
