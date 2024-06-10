@@ -1,6 +1,6 @@
 # main.py
 
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, redirect, url_for, flash
 from google.cloud import bigquery
 from datetime import datetime
 import re
@@ -35,7 +35,8 @@ def registration():
         if is_email_registered(email):
             return 'このメールアドレスは既に登録されています。', 400
         insert_registration_to_bigquery(email, button_time, password)
-        return '登録が完了しました'
+        flash('登録が完了しました。ログインしてください。', 'success')
+        return redirect(url_for('login_page'))
     except Exception as e:
         return f'エラーが発生しました: {e}', 500
 
