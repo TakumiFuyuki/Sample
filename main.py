@@ -37,10 +37,10 @@ def registration():
         #     flash('パスワードは4文字以上で、アルファベットと数字をそれぞれ少なくとも1文字含む必要があります。', 'error')
         #     return redirect(url_for('registration_page'))
         insert_registration_to_bigquery(email, button_time, password)
-        # flash('登録が完了しました。ログインしてください。', 'success')
+        flash('登録が完了しました。ログインしてください。', 'success')
         return redirect(url_for('login_page'))
     except Exception as e:
-        # flash(f'エラーが発生しました: {e}', 'error')
+        flash(f'エラーが発生しました: {e}', 'error')
         return redirect(url_for('registration_page'))
 
 def validate_password(password):
