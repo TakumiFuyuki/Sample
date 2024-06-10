@@ -3,6 +3,7 @@
 from flask import Flask, render_template, request
 from google.cloud import bigquery
 from datetime import datetime
+import re
 
 app = Flask(__name__)
 
@@ -29,12 +30,23 @@ def registration():
         button_time = datetime.now()
         email = request.form['email']
         password = request.form['password']
+        if not validate_password(password):
+            return 'パスワードは4文字以上で、アルファベットと数字をそれぞれ少なくとも1文字含む必要があります。', 400
         if is_email_registered(email):
             return 'このメールアドレスは既に登録されています。', 400
         insert_registration_to_bigquery(email, button_time, password)
         return '登録が完了しました'
     except Exception as e:
         return f'エラーが発生しました: {e}', 500
+
+def validate_password(password):
+    if len(password) < 4:
+        return False
+    if not re.search("[a-zA-Z]", password):
+        return False
+    if not re.search("[0-9]", password):
+        return False
+    return True
 
 def insert_registration_to_bigquery(email, button_time, password):
     button_time_iso = button_time.isoformat()
