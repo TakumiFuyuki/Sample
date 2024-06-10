@@ -31,11 +31,11 @@ def registration():
         email = request.form['email']
         password = request.form['password']
         if is_email_registered(email):
-            flash('このメールアドレスは既に登録されています。')
+            flash('このメールアドレスは既に登録されています。', 'error')
             return redirect(url_for('registration_page'))
-        if not validate_password(password):
-            # flash('パスワードは4文字以上で、アルファベットと数字をそれぞれ少なくとも1文字含む必要があります。', 'error')
-            return redirect(url_for('registration_page'))
+        # if not validate_password(password):
+        #     flash('パスワードは4文字以上で、アルファベットと数字をそれぞれ少なくとも1文字含む必要があります。', 'error')
+        #     return redirect(url_for('registration_page'))
         insert_registration_to_bigquery(email, button_time, password)
         # flash('登録が完了しました。ログインしてください。', 'success')
         return redirect(url_for('login_page'))
@@ -73,7 +73,6 @@ def is_email_registered(email):
     """
     query_job = client.query(query)
     results = query_job.result()
-
     for row in results:
         return True
     return False
