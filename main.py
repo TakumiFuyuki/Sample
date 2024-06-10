@@ -52,8 +52,8 @@ def insert_registration_to_bigquery(email, button_time, password):
 
 def is_email_registered(email):
     query = f"""
-    SELECT email FROM `{dataset_name}.{registration_table}`
-    WHERE email = '{id}'
+    SELECT id FROM `{dataset_name}.{registration_table}`
+    WHERE id = '{id}'
     """
     query_job = client.query(query)
     results = query_job.result()
