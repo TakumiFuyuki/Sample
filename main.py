@@ -16,8 +16,12 @@ def index():
     return render_template('index.html')
 
 @app.route('/registration')
-def index():
+def registration_page():
     return render_template('registration.html')
+
+@app.route('/login')
+def login_page():
+    return render_template('login.html')
 
 @app.route('/registration', methods=['POST'])
 def registration():
@@ -57,10 +61,6 @@ def is_email_registered(email):
     for row in results:
         return True
     return False
-
-@app.route('/login')
-def login_page():
-    return render_template('login.html')
 
 @app.route('/login', methods=['POST'])
 def login():
