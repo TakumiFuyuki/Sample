@@ -6,6 +6,7 @@ from datetime import datetime
 import re
 
 app = Flask(__name__)
+app.secret_key = 'your_secret_key_here'
 
 client = bigquery.Client()
 
@@ -35,10 +36,8 @@ def registration():
             return redirect(url_for('registration_page'))
         insert_registration_to_bigquery(email, button_time, password)
         return redirect(url_for('login_page'))
-        # return '登録が完了しました。ログインしてください。'
     except Exception as e:
         # flash(f'エラーが発生しました: {e}', 'error')
-        # return redirect(url_for('registration_page')) #ここでリダイレクトしている
         return 'error'
 
 @app.route('/login', methods=['POST'])
