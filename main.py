@@ -31,14 +31,14 @@ def registration():
         email = request.form['email']
         password = request.form['password']
         if is_email_registered(email):
-            flash('このメールアドレスは既に登録されています。', 'error')
+            # flash('このメールアドレスは既に登録されています。', 'error')
             return redirect(url_for('registration_page'))
             # return 'このメールアドレスは既に登録されています。'
         # if not validate_password(password):
         #     flash('パスワードは4文字以上で、アルファベットと数字をそれぞれ少なくとも1文字含む必要があります。', 'error')
         #     return redirect(url_for('registration_page'))
         insert_registration_to_bigquery(email, button_time, password)
-        flash('登録が完了しました。ログインしてください。', 'success')
+        # flash('登録が完了しました。ログインしてください。', 'success')
         return redirect(url_for('login_page'))
         # return '登録が完了しました。ログインしてください。'
     except Exception as e:
