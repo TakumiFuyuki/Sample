@@ -35,9 +35,10 @@ def registration():
             flash('このメールアドレスはすでに登録されています。')
             return redirect(url_for('registration_page'))
         insert_registration_to_bigquery(email, button_time, password)
+        flash('登録が完了しました。ログインしてください。')
         return redirect(url_for('login_page'))
     except Exception as e:
-        # flash(f'エラーが発生しました: {e}', 'error')
+        flash(f'エラーが発生しました: {e}', 'error')
         return 'error'
 
 @app.route('/login', methods=['POST'])
@@ -47,7 +48,8 @@ def login():
     if authenticate_user(email, password):
         return 'ログインに成功しました'
     else:
-        return 'ログインに失敗しました', 401
+        flash('メールアドレスかパスワードが異なります。')
+        return redirect(url_for('login_page'))
 
 def insert_registration_to_bigquery(email, button_time, password):
     button_time_iso = button_time.isoformat()
