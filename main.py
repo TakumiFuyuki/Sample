@@ -26,7 +26,7 @@ def login_page():
 
 @app.route('/registration', methods=['POST'])
 def registration():
-    # try:
+    try:
         button_time = datetime.now()
         email = request.form['email']
         password = request.form['password']
@@ -41,9 +41,10 @@ def registration():
         # flash('登録が完了しました。ログインしてください。', 'success')
         # return redirect(url_for('login_page'))
         return '登録が完了しました。ログインしてください。'
-    # except Exception as e:
-    #     flash(f'エラーが発生しました: {e}', 'error')
-    #     return redirect(url_for('registration_page')) #ここでリダイレクトしている
+    except Exception as e:
+        # flash(f'エラーが発生しました: {e}', 'error')
+        # return redirect(url_for('registration_page')) #ここでリダイレクトしている
+        return ('error')
 
 @app.route('/login', methods=['POST'])
 def login():
