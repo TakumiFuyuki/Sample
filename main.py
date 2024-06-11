@@ -31,7 +31,7 @@ def registration():
         email = request.form['email']
         password = request.form['password']
         if is_email_registered(email):
-            # flash('このメールアドレスは既に登録されています。', 'error')
+            flash('このメールアドレスはすでに登録されています。')
             return redirect(url_for('registration_page'))
         insert_registration_to_bigquery(email, button_time, password)
         return redirect(url_for('login_page'))

@@ -60,11 +60,11 @@
 <body>
     <div class="container">
         <h2>ログインフォーム</h2>
-        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% with messages = get_flashed_messages() %}
             {% if messages %}
-                <ul class="flashes">
-                    {% for category, message in messages %}
-                        <li class="{{ category }}">{{ message }}</li>
+                <ul class="flash-messages">
+                    {% for message in messages %}
+                        <li>{{ message }}</li>
                     {% endfor %}
                 </ul>
             {% endif %}
