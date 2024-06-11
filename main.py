@@ -30,10 +30,10 @@ def registration():
         button_time = datetime.now()
         email = request.form['email']
         password = request.form['password']
-        # if is_email_registered(email):
+        if is_email_registered(email):
         #     flash('このメールアドレスは既に登録されています。', 'error')
         #     # return redirect(url_for('registration_page'))
-        #     return 'このメールアドレスは既に登録されています。'
+            return 'このメールアドレスは既に登録されています。'
         # if not validate_password(password):
         #     flash('パスワードは4文字以上で、アルファベットと数字をそれぞれ少なくとも1文字含む必要があります。', 'error')
         #     return redirect(url_for('registration_page'))
@@ -44,7 +44,7 @@ def registration():
     except Exception as e:
         # flash(f'エラーが発生しました: {e}', 'error')
         # return redirect(url_for('registration_page')) #ここでリダイレクトしている
-        return ('error')
+        return 'error'
 
 @app.route('/login', methods=['POST'])
 def login():
@@ -77,6 +77,18 @@ def insert_registration_to_bigquery(email, button_time, password):
     errors = client.insert_rows_json(table_id, rows_to_insert)
     if errors:
         raise Exception(f'BigQueryへのデータ挿入中にエラーが発生しました: {errors}')
+
+def is_email_registered(email):
+    query = f"""
+    SELECT COUNT(1) as count FROM `{dataset_name}.{registration_table}`
+    WHERE id = '{email}'
+    """
+    query_job = client.query(query)
+    results = query_job.result()
+    for row in results:
+        if row['count'] > 0:
+            return True
+    return False
 
 # def is_email_registered(email):
 #     query = f"""
