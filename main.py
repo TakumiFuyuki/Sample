@@ -30,15 +30,15 @@ def registration():
         button_time = datetime.now()
         email = request.form['email']
         password = request.form['password']
-        if is_email_registered(email):
-            flash('このメールアドレスは既に登録されています。', 'error')
-            # return redirect(url_for('registration_page'))
-            return 'このメールアドレスは既に登録されています。'
+        # if is_email_registered(email):
+        #     flash('このメールアドレスは既に登録されています。', 'error')
+        #     # return redirect(url_for('registration_page'))
+        #     return 'このメールアドレスは既に登録されています。'
         # if not validate_password(password):
         #     flash('パスワードは4文字以上で、アルファベットと数字をそれぞれ少なくとも1文字含む必要があります。', 'error')
         #     return redirect(url_for('registration_page'))
         insert_registration_to_bigquery(email, button_time, password)
-        flash('登録が完了しました。ログインしてください。', 'success')
+        # flash('登録が完了しました。ログインしてください。', 'success')
         # return redirect(url_for('login_page'))
         return '登録が完了しました。ログインしてください。'
     # except Exception as e:
@@ -54,14 +54,14 @@ def login():
     else:
         return 'ログインに失敗しました', 401
 
-def validate_password(password):
-    if len(password) < 4:
-        return False
-    if not re.search("[a-zA-Z]", password):
-        return False
-    if not re.search("[0-9]", password):
-        return False
-    return True
+# def validate_password(password):
+#     if len(password) < 4:
+#         return False
+#     if not re.search("[a-zA-Z]", password):
+#         return False
+#     if not re.search("[0-9]", password):
+#         return False
+#     return True
 
 def insert_registration_to_bigquery(email, button_time, password):
     button_time_iso = button_time.isoformat()
@@ -77,16 +77,16 @@ def insert_registration_to_bigquery(email, button_time, password):
     if errors:
         raise Exception(f'BigQueryへのデータ挿入中にエラーが発生しました: {errors}')
 
-def is_email_registered(email):
-    query = f"""
-    SELECT id FROM `{dataset_name}.{registration_table}`
-    WHERE id = '{email}'
-    """
-    query_job = client.query(query)
-    results = query_job.result()
-    for row in results:
-        return True
-    return False
+# def is_email_registered(email):
+#     query = f"""
+#     SELECT id FROM `{dataset_name}.{registration_table}`
+#     WHERE id = '{email}'
+#     """
+#     query_job = client.query(query)
+#     results = query_job.result()
+#     for row in results:
+#         return True
+#     return False
 
 def authenticate_user(email, password):
     query = f"""
