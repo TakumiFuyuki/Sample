@@ -31,6 +31,9 @@ def registration():
         button_time = datetime.now()
         email = request.form['email']
         password = request.form['password']
+        if not is_valid_password(password):
+            flash('パスワードは4文字以上で、アルファベットと数字が少なくとも1文字以上含まれている必要があります。')
+            return redirect(url_for('registration_page'))
         if is_email_registered(email):
             flash('このメールアドレスはすでに登録されています。')
             return redirect(url_for('registration_page'))
@@ -64,6 +67,15 @@ def insert_registration_to_bigquery(email, button_time, password):
     errors = client.insert_rows_json(table_id, rows_to_insert)
     if errors:
         raise Exception(f'BigQueryへのデータ挿入中にエラーが発生しました: {errors}')
+
+def is_valid_password(password):
+    if len(password) < 4:
+        return False
+    if not re.search('[A-Za-z]', password):
+        return False
+    if not re.search('[0-9]', password):
+        return False
+    return True
 
 def is_email_registered(email):
     query = f"""
