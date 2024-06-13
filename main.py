@@ -31,6 +31,10 @@ def registration_page():
 def login_page():
     return render_template('login.html')
 
+@app.route('/upload')
+def upload_page():
+    return render_template('upload.html')
+
 @app.route('/registration', methods=['POST'])
 def registration():
     try:
@@ -55,7 +59,7 @@ def login():
     email = request.form['email']
     password = request.form['password']
     if authenticate_user(email, password):
-        return render_template('upload.html')
+        return redirect(url_for('upload_page'))
     else:
         flash('メールアドレスかパスワードが異なります。')
         return redirect(url_for('login_page'))
