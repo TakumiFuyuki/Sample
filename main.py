@@ -106,6 +106,7 @@ def authenticate_user(email, password):
             return True
     return False
 
+@app.route('/upload', methods=['GET', 'POST'])
 def upload_file():
     if request.method == 'POST':
         file = request.files['file']
