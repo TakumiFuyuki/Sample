@@ -106,15 +106,17 @@ def authenticate_user(email, password):
             return True
     return False
 
-@app.route('/upload', methods=['GET', 'POST'])
 def upload_file():
     if request.method == 'POST':
         file = request.files['file']
-        if file:
+        if file and file.filename.endswith('.txt'): #txtファイルに制限
             blob = bucket.blob(file.filename)
             blob.upload_from_string(file.read(), content_type=file.content_type)
             flash(f'File {file.filename} uploaded to {bucket_name}.')
             return redirect(url_for('index'))
+        else:
+            flash('Only .txt files are allowed.')
+            return redirect(url_for('upload_file'))
     return render_template('upload.html')
 
 @app.route('/download/<filename>', methods=['GET'])
