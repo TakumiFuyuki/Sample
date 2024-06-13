@@ -62,13 +62,19 @@ def login():
 
 @app.route('/upload', methods=['GET', 'POST'])
 def upload_file():
+    if 'user' not in session:
+        return redirect(url_for('login_page'))
+
     if request.method == 'POST':
         file = request.files['file']
-        if file and file.filename.endswith('.txt'): #txtファイルに制限
-            blob = bucket.blob(file.filename)
+        if file and file.filename.endswith('.txt'):
+            user_email = session['user']
+            file_name = f'{user_email}_{datetime.now().strftime("%Y%m%d%H%M%S")}_{file.filename}'
+            blob = bucket.blob(file_name)
             blob.upload_from_string(file.read(), content_type=file.content_type)
+            insert_file_record(user_email, file_name)
             flash(f'File {file.filename} uploaded to {bucket_name}.')
-            return redirect(url_for('index'))
+            return redirect(url_for('upload_file'))
         else:
             flash('Only .txt files are allowed.')
             return redirect(url_for('upload_file'))
