@@ -1,0 +1,19 @@
+<!-- templates/files.html -->
+
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>My Files</title>
+</head>
+<body>
+    <h1>My Files</h1>
+    <ul>
+        {% for file in files %}
+        <li><a href="{{ url_for('download_file', filename=file.file_name) }}">{{ file.file_name }}</a> ({{ file.upload_time }})</li>
+        {% endfor %}
+    </ul>
+    <a href="{{ url_for('upload_file') }}">Upload More Files</a>
+    <a href="{{ url_for('logout') }}">Logout</a>
+</body>
+</html>
