@@ -2,16 +2,21 @@
 
 from flask import Flask, render_template, request, redirect, url_for, flash
 from google.cloud import bigquery
+from google.cloud import storage
 from datetime import datetime
 import re
+import os
 
 app = Flask(__name__)
 app.secret_key = 'your_secret_key_here'
 
-client = bigquery.Client()
+bigquery_client = bigquery.Client()
+storage_client = storage.Client()
 
 dataset_name = 'my-project-sample-425203.dataset'
 registration_table = 'registration'
+bucket_name = 'txt_submit'
+bucket = storage_client.bucket(bucket_name)
 
 @app.route('/')
 def index():
@@ -49,7 +54,7 @@ def login():
     email = request.form['email']
     password = request.form['password']
     if authenticate_user(email, password):
-        return 'ログインに成功しました'
+        return render_template('upload.html')
     else:
         flash('メールアドレスかパスワードが異なります。')
         return redirect(url_for('login_page'))
@@ -64,7 +69,7 @@ def insert_registration_to_bigquery(email, button_time, password):
         }
     ]
     table_id = f'{dataset_name}.{registration_table}'
-    errors = client.insert_rows_json(table_id, rows_to_insert)
+    errors = bigquery_client.insert_rows_json(table_id, rows_to_insert)
     if errors:
         raise Exception(f'BigQueryへのデータ挿入中にエラーが発生しました: {errors}')
 
@@ -82,7 +87,7 @@ def is_email_registered(email):
     SELECT COUNT(1) as count FROM `{dataset_name}.{registration_table}`
     WHERE id = '{email}'
     """
-    query_job = client.query(query)
+    query_job = bigquery_client.query(query)
     results = query_job.result()
     for row in results:
         if row['count'] > 0:
@@ -94,12 +99,32 @@ def authenticate_user(email, password):
     SELECT password FROM `{dataset_name}.{registration_table}`
     WHERE id = '{email}'
     """
-    query_job = client.query(query)
+    query_job = bigquery_client.query(query)
     results = query_job.result()
     for row in results:
         if row['password'] == password:
             return True
     return False
+
+@app.route('/upload', methods=['GET', 'POST'])
+def upload_file():
+    if request.method == 'POST':
+        file = request.files['file']
+        if file:
+            blob = bucket.blob(file.filename)
+            blob.upload_from_string(file.read(), content_type=file.content_type)
+            flash(f'File {file.filename} uploaded to {bucket_name}.')
+            return redirect(url_for('index'))
+    return render_template('upload.html')
+
+@app.route('/download/<filename>', methods=['GET'])
+def download_file(filename):
+    blob = bucket.blob(filename)
+    file_content = blob.download_as_string()
+    return file_content, 200, {
+        'Content-Disposition': f'attachment; filename={filename}',
+        'Content-Type': blob.content_type
+    }
 
 if __name__ == '__main__':
     app.run(host='127.0.0.1', port=8080, debug=True)

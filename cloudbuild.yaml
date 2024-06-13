@@ -1,8 +1,9 @@
 # cloudbuild.yaml
 
 steps:
-  # Install dependencies
-  - name: 'gcr.io/cloud-builders/gcloud'
-    args: ['app', 'deploy']
+- name: 'gcr.io/cloud-builders/gcloud'
+  args: ['app', 'deploy']
+  env:
+  - 'BUCKET_NAME=your-bucket-name'
 
 timeout: '1600s'
