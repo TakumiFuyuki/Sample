@@ -26,7 +26,7 @@ def index():
 def registration_page():
     return render_template('registration.html')
 
-@app.route('/registration/submit', methods=['POST'])
+@app.route('/registration', methods=['POST'])
 def registration():
     try:
         button_time = datetime.now()
@@ -49,7 +49,7 @@ def registration():
 def login_page():
     return render_template('login.html')
 
-@app.route('/login/submit', methods=['POST'])
+@app.route('/login', methods=['POST'])
 def login():
     email = request.form['email']
     password = request.form['password']
