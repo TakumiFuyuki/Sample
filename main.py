@@ -66,8 +66,8 @@ def login():
 
 @app.route('/upload', methods=['GET', 'POST'])
 def upload_file():
-    # if 'user' not in session:
-    #     return redirect(url_for('login_page'))
+    if 'user' not in session:
+        return redirect(url_for('login_page'))
 
     if request.method == 'POST':
         file = request.files['file']
