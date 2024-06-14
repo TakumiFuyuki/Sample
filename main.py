@@ -63,7 +63,7 @@ def login():
 def upload_page():
     return render_template('upload.html')
 
-@app.route('/upload/submit', methods=['POST'])
+@app.route('/upload', methods=['POST'])
 def upload_file():
     if 'user' not in session:
         return redirect(url_for('login_page'))
