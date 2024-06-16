@@ -64,8 +64,9 @@ def login_page():
         email = request.form['email']
         password = request.form['password']
         if utils.authenticate_user(email, password):
-            session['user'] = email
-            return redirect(url_for('upload_page'))
+            # session['user'] = email
+            return 'a'
+            # return redirect(url_for('upload_page'))
         else:
             flash('メールアドレスかパスワードが異なります。')
             return redirect(url_for('login_page'))
