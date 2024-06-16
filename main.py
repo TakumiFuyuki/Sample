@@ -22,13 +22,9 @@ bucket = storage_client.bucket(bucket_name)
 def index():
     return render_template('index.html')
 
-@app.route('/registration', methods=['GET'])
+@app.route('/registration', methods=['GET', 'POST'])
 def registration_page():
-    return render_template('registration.html')
-
-@app.route('/registration', methods=['POST'])
-def registration():
-    try:
+    if request.method == 'POST':
         button_time = datetime.now()
         email = request.form['email']
         password = request.form['password']
@@ -41,35 +37,56 @@ def registration():
         utils.insert_registration_to_bigquery(email, button_time, password)
         flash('登録が完了しました。ログインしてください。')
         return redirect(url_for('login_page'))
-    except Exception as e:
-        flash(f'エラーが発生しました: {e}', 'error')
-        return 'error'
+    return render_template('registration.html')
 
-@app.route('/login', methods=['GET'])
+# @app.route('/registration', methods=['POST'])
+# def registration():
+#     try:
+#         button_time = datetime.now()
+#         email = request.form['email']
+#         password = request.form['password']
+#         if not utils.is_valid_password(password):
+#             flash('パスワードは4文字以上で、アルファベットと数字が少なくとも1文字以上含まれている必要があります。')
+#             return redirect(url_for('registration_page'))
+#         if utils.is_email_registered(email):
+#             flash('このメールアドレスはすでに登録されています。')
+#             return redirect(url_for('registration_page'))
+#         utils.insert_registration_to_bigquery(email, button_time, password)
+#         flash('登録が完了しました。ログインしてください。')
+#         return redirect(url_for('login_page'))
+#     except Exception as e:
+#         flash(f'エラーが発生しました: {e}', 'error')
+#         return 'error'
+
+@app.route('/login', methods=['GET','POST'])
 def login_page():
+    if request.method == 'POST':
+        email = request.form['email']
+        password = request.form['password']
+        if utils.authenticate_user(email, password):
+            session['user'] = email
+            return redirect(url_for('upload_page'))
+        else:
+            flash('メールアドレスかパスワードが異なります。')
+            return redirect(url_for('login_page'))
     return render_template('login.html')
 
-@app.route('/login', methods=['POST'])
-def login():
-    email = request.form['email']
-    password = request.form['password']
-    if utils.authenticate_user(email, password):
-        session['user'] = email
-        return redirect(url_for('upload_page'))
-    else:
-        flash('メールアドレスかパスワードが異なります。')
-        return redirect(url_for('login_page'))
+# @app.route('/login', methods=['POST'])
+# def login():
+#     email = request.form['email']
+#     password = request.form['password']
+#     if utils.authenticate_user(email, password):
+#         session['user'] = email
+#         return redirect(url_for('upload_page'))
+#     else:
+#         flash('メールアドレスかパスワードが異なります。')
+#         return redirect(url_for('login_page'))
 
-@app.route('/upload', methods=['GET'])
+@app.route('/upload', methods=['GET', 'POST'])
 def upload_page():
-    return render_template('upload.html')
-
-@app.route('/upload', methods=['POST'])
-def upload_file():
-    if 'user' not in session:
-        return redirect(url_for('login_page'))
-
     if request.method == 'POST':
+        if 'user' not in session:
+            return redirect(url_for('login_page'))
         file = request.files['file']
         if file and file.filename.endswith('.txt'):
             user_email = session['user']
@@ -83,6 +100,26 @@ def upload_file():
             flash('Only .txt files are allowed.')
             return redirect(url_for('upload_file'))
     return render_template('upload.html')
+
+# @app.route('/upload', methods=['POST'])
+# def upload_file():
+#     if 'user' not in session:
+#         return redirect(url_for('login_page'))
+
+#     if request.method == 'POST':
+#         file = request.files['file']
+#         if file and file.filename.endswith('.txt'):
+#             user_email = session['user']
+#             file_name = f'{user_email}_{datetime.now().strftime("%Y%m%d%H%M%S")}_{file.filename}'
+#             blob = bucket.blob(file_name)
+#             blob.upload_from_string(file.read(), content_type=file.content_type)
+#             utils.insert_file_record(user_email, file_name)
+#             flash(f'File {file.filename} uploaded to {bucket_name}.')
+#             return redirect(url_for('upload_file'))
+#         else:
+#             flash('Only .txt files are allowed.')
+#             return redirect(url_for('upload_file'))
+#     return render_template('upload.html')
 
 @app.route('/download/<filename>', methods=['GET'])
 def download_file(filename):
