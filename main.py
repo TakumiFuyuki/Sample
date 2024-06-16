@@ -30,13 +30,13 @@ def registration_page():
         password = request.form['password']
         if not utils.is_valid_password(password):
             flash('パスワードは4文字以上で、アルファベットと数字が少なくとも1文字以上含まれている必要があります。')
-            return redirect(url_for('registration_page'))
+            return render_template('registration.html')
         if utils.is_email_registered(email):
             flash('このメールアドレスはすでに登録されています。')
-            return redirect(url_for('registration_page'))
+            return render_template('registration.html')
         utils.insert_registration_to_bigquery(email, button_time, password)
         flash('登録が完了しました。ログインしてください。')
-        return redirect(url_for('login_page'))
+        return render_template('login.html')
     return render_template('registration.html')
 
 # @app.route('/registration', methods=['POST'])
@@ -66,10 +66,10 @@ def login_page():
         if utils.authenticate_user(email, password):
             # session['user'] = email
             # return 'a'
-            return redirect(url_for('upload_page'))
+            return render_template('login.html')
         else:
             flash('メールアドレスかパスワードが異なります。')
-            return redirect(url_for('login_page'))
+            return render_template('login.html')
     return render_template('login.html')
 
 # @app.route('/login', methods=['POST'])
@@ -87,7 +87,7 @@ def login_page():
 def upload_page():
     if request.method == 'POST':
         if 'user' not in session:
-            return redirect(url_for('login_page'))
+            return render_template('login.html')
         file = request.files['file']
         if file and file.filename.endswith('.txt'):
             user_email = session['user']
@@ -96,10 +96,10 @@ def upload_page():
             blob.upload_from_string(file.read(), content_type=file.content_type)
             utils.insert_file_record(user_email, file_name)
             flash(f'File {file.filename} uploaded to {bucket_name}.')
-            return redirect(url_for('upload_file'))
+            return render_template('upload.html')
         else:
             flash('Only .txt files are allowed.')
-            return redirect(url_for('upload_file'))
+            return render_template('upload.html')
     return render_template('upload.html')
 
 # @app.route('/upload', methods=['POST'])
