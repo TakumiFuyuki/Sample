@@ -45,7 +45,7 @@ def login():
         email = request.form['email']
         password = request.form['password']
         if not utils.authenticate_user(email, password):
-            flash('メールアドレスかパスワードが異なります。')
+            # flash('メールアドレスかパスワードが異なります。')
             return render_template('login.html')
         else:
             return redirect(url_for('main'))
