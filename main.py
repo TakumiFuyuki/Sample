@@ -20,6 +20,10 @@ bucket = storage_client.bucket(bucket_name)
 
 @app.route('/', methods=['GET'])
 def index():
+    return render_template('index.html')
+
+@app.route('/registration', methods=['GET', 'POST'])
+def registration():
     if request.method == 'POST':
         button_time = datetime.now()
         email = request.form['email']
@@ -33,10 +37,6 @@ def index():
         utils.insert_registration_to_bigquery(email, button_time, password)
         # flash('登録が完了しました。ログインしてください。')
         return render_template('login.html')
-    return render_template('index.html')
-
-@app.route('/registration', methods=['GET', 'POST'])
-def registration():
     return render_template('registration.html')
 
 @app.route('/login', methods=['GET', 'POST'])
