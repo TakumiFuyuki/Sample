@@ -30,7 +30,7 @@ def registration():
         password = request.form['password']
         if not utils.is_valid_password(password):
             flash('パスワードは4文字以上で、アルファベットと数字が少なくとも1文字以上含まれている必要があります。')
-            return render_template('registration.html')
+            return redirect(url_for('registration'))
         if utils.is_email_registered(email):
             flash('このメールアドレスはすでに登録されています。')
             return render_template('registration.html')
