@@ -60,13 +60,7 @@ def main():
 
 @app.route('/logout', methods=['GET'])
 def logout():
-    # # デバッグ情報を追加
-    # print(f"Current session: {session}")
-    # # session.popの正しい使い方
-    # session.pop('logged_in', None)
-    # # デバッグ情報を追加
-    # print(f"Session after pop: {session}")
-    # return redirect('/')
+    session.pop('logged_in', None)
     return render_template('logout.html')
 
 if __name__ == '__main__':
