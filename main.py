@@ -54,6 +54,8 @@ def login():
 
 @app.route('/main', methods=['GET'])
 def main():
+    if not session.get('logged_in'):
+        return redirect(url_for('login'))
     return render_template('main.html')
 
 @app.route('/logout', methods=['GET'])
