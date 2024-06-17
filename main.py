@@ -22,9 +22,9 @@ bucket = storage_client.bucket(bucket_name)
 def index():
     return render_template('index.html')
 
-@app.route('/registration', ['GET', 'POST'])
-def registration():
-    return render_template('registration.html')
+# @app.route('/registration', ['GET', 'POST'])
+# def registration():
+#     return render_template('registration.html')
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
