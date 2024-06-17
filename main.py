@@ -48,7 +48,7 @@ def login():
             flash('メールアドレスかパスワードが異なります。')
             return redirect(url_for('login'))
         else:
-            session.pop['login'] = True
+            session.pop['logged_in'] = True
             return redirect(url_for('main'))
     return render_template('login.html')
 
@@ -58,7 +58,7 @@ def main():
 
 @app.route('/logout', methods=['GET'])
 def logout():
-    session.pop('login', None)
+    session.pop('logged_in', None)
     return redirect(url_for('index'))
 
 if __name__ == '__main__':
