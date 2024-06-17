@@ -20,6 +20,19 @@ bucket = storage_client.bucket(bucket_name)
 
 @app.route('/', methods=['GET'])
 def index():
+    if request.method == 'POST':
+        button_time = datetime.now()
+        email = request.form['email']
+        password = request.form['password']
+        if not utils.is_valid_password(password):
+            # flash('パスワードは4文字以上で、アルファベットと数字が少なくとも1文字以上含まれている必要があります。')
+            return render_template('registration.html')
+        if utils.is_email_registered(email):
+            # flash('このメールアドレスはすでに登録されています。')
+            return render_template('registration.html')
+        utils.insert_registration_to_bigquery(email, button_time, password)
+        # flash('登録が完了しました。ログインしてください。')
+        return render_template('login.html')
     return render_template('index.html')
 
 @app.route('/registration', methods=['GET', 'POST'])
@@ -29,7 +42,13 @@ def registration():
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
-        return redirect(url_for('main'))
+        email = request.form['email']
+        password = request.form['password']
+        if not utils.authenticate_user(email, password):
+            flash('メールアドレスかパスワードが異なります。')
+            return render_template('login.html')
+        else:
+            return redirect(url_for('main'))
     return render_template('login.html')
 
 @app.route('/main', methods=['GET'])
