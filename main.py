@@ -61,7 +61,7 @@ def main():
 @app.route('/logout', methods=['GET'])
 def logout():
     session.pop('logged_in', None)
-    return render_template('logout.html')
+    return redirect(url_for('index'))
 
 if __name__ == '__main__':
     app.run(host='127.0.0.1', port=8080, debug=True)
