@@ -33,10 +33,10 @@ def registration():
             return redirect(url_for('registration'))
         if utils.is_email_registered(email):
             flash('このメールアドレスはすでに登録されています。')
-            return render_template('registration.html')
+            return redirect(url_for('registration'))
         utils.insert_registration_to_bigquery(email, button_time, password)
-        # flash('登録が完了しました。ログインしてください。')
-        return render_template('login.html')
+        flash('登録が完了しました。ログインしてください。')
+        return redirect(url_for('login'))
     return render_template('registration.html')
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -45,8 +45,8 @@ def login():
         email = request.form['email']
         password = request.form['password']
         if not utils.authenticate_user(email, password):
-            # flash('メールアドレスかパスワードが異なります。')
-            return render_template('login.html')
+            flash('メールアドレスかパスワードが異なります。')
+            return redirect(url_for('login'))
         else:
             return redirect(url_for('main'))
     return render_template('login.html')
