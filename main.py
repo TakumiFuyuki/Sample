@@ -48,7 +48,7 @@ def login():
             flash('メールアドレスかパスワードが異なります。')
             return redirect(url_for('login'))
         else:
-            session.pop['logged_in'] = True
+            session['logged_in'] = True
             return redirect(url_for('main'))
     return render_template('login.html')
 
