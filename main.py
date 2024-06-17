@@ -66,7 +66,7 @@ def logout():
     session.pop('logged_in', None)
     # デバッグ情報を追加
     print(f"Session after pop: {session}")
-    return redirect(url_for('index'))
+    return render_template('index.html')
 
 if __name__ == '__main__':
     app.run(host='127.0.0.1', port=8080, debug=True)
