@@ -32,5 +32,9 @@ def login():
 def main():
     return render_template('main.html')
 
+@app.route('/logout', methods=['GET'])
+def logout():
+    return redirect(url_for('index'))
+
 if __name__ == '__main__':
     app.run(host='127.0.0.1', port=8080, debug=True)
