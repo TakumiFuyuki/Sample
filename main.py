@@ -79,8 +79,8 @@ def main():
 
     email = session['email']
     files = utils.get_user_files(email)
-    return render_template('main.html', files=files)
-    # return render_template('main.html')
+    # return render_template('main.html', files=files)
+    return render_template('main.html')
 
 @app.route('/upload', methods=['POST'])
 def upload_file():
