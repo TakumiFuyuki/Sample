@@ -2,7 +2,6 @@
 
 from google.cloud import bigquery, storage
 from datetime import datetime, timedelta
-# from google.cloud.storage.blob import blob
 import re
 
 bigquery_client = bigquery.Client()
