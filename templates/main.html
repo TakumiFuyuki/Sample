@@ -4,24 +4,28 @@
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>メインページ</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
 </head>
 
 <body>
-    <div class="header">
-        <h1>メインページ</h1>
+    <div class="container mt-3">
+        <div class="d-flex justify-content-between align-items-center">
+            <a class="btn btn-primary" href="/logout">ログアウト</a>
+        </div>
+
+        <div class="text-center mt-5">
+            <h1>メインページ</h1>
+        </div>
+
+        <div class="text-center mt-3">
+            <h2>こんにちは</h2>
+        </div>
     </div>
-    <div class="content">
-        <h2>こんにちは</h2>
-    </div>
+
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
 </body>
-<div class="container">
-    <div class="collapse navbar-collapse" id="navbarNav">
-        <ul class="nav navbar-nav navbar-right">
-            <li class="nav-item">
-                <a class="nav-link" href="/logout">ログアウト</a>
-            </li>
-        </ul>
-    </div>
-</div>
 </html>
