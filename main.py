@@ -39,6 +39,19 @@ def registration():
         return redirect(url_for('login'))
     return render_template('registration.html')
 
+# @app.route('/login', methods=['GET', 'POST'])
+# def login():
+#     if request.method == 'POST':
+#         email = request.form['email']
+#         password = request.form['password']
+#         if not utils.authenticate_user(email, password):
+#             flash('メールアドレスかパスワードが異なります。')
+#             return redirect(url_for('login'))
+#         else:
+#             session['logged_in'] = True
+#             return redirect(url_for('main'))
+#     return render_template('login.html')
+
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
@@ -49,18 +62,53 @@ def login():
             return redirect(url_for('login'))
         else:
             session['logged_in'] = True
+            session['email'] = email
             return redirect(url_for('main'))
     return render_template('login.html')
+
+# @app.route('/main', methods=['GET'])
+# def main():
+#     if not session.get('logged_in'):
+#         return redirect(url_for('login'))
+#     return render_template('main.html')
 
 @app.route('/main', methods=['GET'])
 def main():
     if not session.get('logged_in'):
         return redirect(url_for('login'))
-    return render_template('main.html')
+
+    email = session['email']
+    files = utils.get_user_files(email)
+    return render_template('main.html', files=files)
+
+@app.route('/upload', methods=['POST'])
+def upload_file():
+    if not session.get('logged_in'):
+        return redirect(url_for('login'))
+
+    email = session['email']
+    file = request.files['file']
+    if file.filename == '':
+        flash('ファイルが選択されていません。')
+        return redirect(url_for('main'))
+
+    filename = f"{email}/{file.filename}"
+    blob = bucket.blob(filename)
+    blob.upload_from_file(file)
+
+    utils.insert_file_record(email, filename)
+    flash('ファイルがアップロードされました。')
+    return redirect(url_for('main'))
+
+# @app.route('/logout', methods=['GET'])
+# def logout():
+#     session.pop('logged_in', None)
+#     return redirect(url_for('index'))
 
 @app.route('/logout', methods=['GET'])
 def logout():
     session.pop('logged_in', None)
+    session.pop('email', None)
     return redirect(url_for('index'))
 
 if __name__ == '__main__':

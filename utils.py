@@ -95,3 +95,44 @@ def get_user_files(email):
     query_job = bigquery_client.query(query)
     results = query_job.result()
     return [{'file_name': row['file_name'], 'upload_time': row['upload_time']} for row in results]
+
+def insert_file_record(email, filename):
+    bigquery_client = bigquery.Client()
+    dataset_name = 'my-project-sample-425203.dataset'
+    file_table = 'user_files'
+    table_id = f"{dataset_name}.{file_table}"
+
+    rows_to_insert = [
+        {u'email': email, u'filename': filename}
+    ]
+
+    errors = bigquery_client.insert_rows_json(table_id, rows_to_insert)
+    if errors != []:
+        raise Exception(errors)
+
+def get_user_files(email):
+    bigquery_client = bigquery.Client()
+    dataset_name = 'my-project-sample-425203.dataset'
+    file_table = 'user_files'
+    query = f"""
+        SELECT filename
+        FROM `{dataset_name}.{file_table}`
+        WHERE email = '{email}'
+    """
+
+    query_job = bigquery_client.query(query)
+    results = query_job.result()
+
+    storage_client = storage.Client()
+    bucket_name = 'txt_submit'
+    bucket = storage_client.bucket(bucket_name)
+
+    files = []
+    for row in results:
+        blob = bucket.blob(row.filename)
+        files.append({
+            'name': row.filename.split('/')[-1],
+            'url': blob.generate_signed_url(expiration=datetime.timedelta(hours=1))
+        })
+
+    return files
