@@ -74,8 +74,8 @@ def login():
 
 @app.route('/main', methods=['GET'])
 def main():
-    # if not session.get('logged_in'):
-    #     return redirect(url_for('login'))
+    if not session.get('logged_in'):
+        return redirect(url_for('login'))
 
     # email = session['email']
     # files = utils.get_user_files(email)
