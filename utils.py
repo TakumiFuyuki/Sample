@@ -95,35 +95,70 @@ def get_user_files(email):
     results = query_job.result()
     return [{'file_name': row['file_name'], 'upload_time': row['upload_time']} for row in results]
 
+# def insert_file_record(email, filename):
+#     bigquery_client = bigquery.Client()
+#     dataset_name = 'my-project-sample-425203.dataset'
+#     file_table = 'user_files'
+#     table_id = f"{dataset_name}.{file_table}"
+
+#     rows_to_insert = [
+#         {u'email': email, u'filename': filename}
+#     ]
+
+#     errors = bigquery_client.insert_rows_json(table_id, rows_to_insert)
+#     if errors != []:
+#         raise Exception(errors)
+
 def insert_file_record(email, filename):
-    bigquery_client = bigquery.Client()
-    dataset_name = 'my-project-sample-425203.dataset'
-    file_table = 'user_files'
-    table_id = f"{dataset_name}.{file_table}"
+    try:
+        rows_to_insert = [
+            {u'email': email, u'filename': filename}
+        ]
+        table_id = f"{dataset_name}.{file_table}"
 
-    rows_to_insert = [
-        {u'email': email, u'filename': filename}
-    ]
+        errors = bigquery_client.insert_rows_json(table_id, rows_to_insert)
+        if errors:
+            raise Exception(errors)
+    except Exception as e:
+        raise Exception(f"insert_file_recordでエラーが発生しました: {e}")
 
-    errors = bigquery_client.insert_rows_json(table_id, rows_to_insert)
-    if errors != []:
-        raise Exception(errors)
+# def get_user_files(email):
+#     query = f"""
+#     SELECT file_name, upload_time FROM `{dataset_name}.{file_table}`
+#     WHERE user_email = '{email}'
+#     ORDER BY upload_time DESC
+#     """
+#     query_job = bigquery_client.query(query)
+#     results = query_job.result()
+
+#     files = []
+#     for row in results:
+#         blob = bucket.blob(row['file_name'])
+#         files.append({
+#             'name': row['file_name'].split('/')[-1],
+#             'url': blob.generate_signed_url(expiration=timedelta(hours=1)),
+#             'upload_time': row['upload_time']
+#         })
+#     return files
 
 def get_user_files(email):
-    query = f"""
-    SELECT file_name, upload_time FROM `{dataset_name}.{file_table}`
-    WHERE user_email = '{email}'
-    ORDER BY upload_time DESC
-    """
-    query_job = bigquery_client.query(query)
-    results = query_job.result()
+    try:
+        query = f"""
+        SELECT file_name, upload_time FROM `{dataset_name}.{file_table}`
+        WHERE user_email = '{email}'
+        ORDER BY upload_time DESC
+        """
+        query_job = bigquery_client.query(query)
+        results = query_job.result()
 
-    files = []
-    for row in results:
-        blob = bucket.blob(row['file_name'])
-        files.append({
-            'name': row['file_name'].split('/')[-1],
-            'url': blob.generate_signed_url(expiration=timedelta(hours=1)),
-            'upload_time': row['upload_time']
-        })
-    return files
+        files = []
+        for row in results:
+            blob = bucket.blob(row['file_name'])
+            files.append({
+                'name': row['file_name'].split('/')[-1],
+                'url': blob.generate_signed_url(expiration=timedelta(hours=1)),
+                'upload_time': row['upload_time']
+            })
+        return files
+    except Exception as e:
+        raise Exception(f"get_user_filesでエラーが発生しました: {e}")

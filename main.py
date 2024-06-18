@@ -72,15 +72,27 @@ def login():
 #         return redirect(url_for('login'))
 #     return render_template('main.html')
 
+# @app.route('/main', methods=['GET'])
+# def main():
+#     if not session.get('logged_in'):
+#         return redirect(url_for('login'))
+
+#     email = session['email']
+#     files = utils.get_user_files(email)
+#     return render_template('main.html', files=files)
+
 @app.route('/main', methods=['GET'])
 def main():
     if not session.get('logged_in'):
         return redirect(url_for('login'))
 
-    email = session['email']
-    files = utils.get_user_files(email)
-    return render_template('main.html', files=files)
-    # return render_template('main.html')
+    try:
+        email = session['email']
+        files = utils.get_user_files(email)
+        return render_template('main.html', files=files)
+    except Exception as e:
+        app.logger.error(f"メインページの読み込み中にエラーが発生しました: {e}")
+        return "エラーが発生しました", 500
 
 @app.route('/upload', methods=['POST'])
 def upload_file():
