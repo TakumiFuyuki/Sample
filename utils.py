@@ -1,8 +1,8 @@
 # utils.py
 
-from google.cloud import bigquery
-from google.cloud import storage
-from datetime import datetime
+from google.cloud import bigquery, storage
+from datetime import datetime, timedelta
+# from google.cloud.storage.blob import blob
 import re
 
 bigquery_client = bigquery.Client()
@@ -124,7 +124,7 @@ def get_user_files(email):
         blob = bucket.blob(row['file_name'])
         files.append({
             'name': row['file_name'].split('/')[-1],
-            'url': blob.generate_signed_url(expiration=datetime.timedelta(hours=1)),
+            'url': blob.generate_signed_url(expiration=timedelta(hours=1)),
             'upload_time': row['upload_time']
         })
     return files
