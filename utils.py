@@ -60,19 +60,6 @@ def authenticate_user(email, password):
             return True
     return False
 
-def insert_file_record(email, file_name):
-    rows_to_insert = [
-        {
-            'user_email': email,
-            'file_name': file_name,
-            'upload_time': datetime.now().isoformat()
-        }
-    ]
-    table_id = f'{dataset_name}.{file_table}'
-    errors = bigquery_client.insert_rows_json(table_id, rows_to_insert)
-    if errors:
-        raise Exception(f'BigQueryへのファイル情報挿入中にエラーが発生しました: {errors}')
-
 def is_user_file(email, file_name):
     query = f"""
     SELECT COUNT(1) as count FROM `{dataset_name}.{file_table}`
@@ -109,18 +96,18 @@ def get_user_files(email):
 #     if errors != []:
 #         raise Exception(errors)
 
-def insert_file_record(email, filename):
-    try:
-        rows_to_insert = [
-            {u'email': email, u'filename': filename}
-        ]
-        table_id = f"{dataset_name}.{file_table}"
-
-        errors = bigquery_client.insert_rows_json(table_id, rows_to_insert)
-        if errors:
-            raise Exception(errors)
-    except Exception as e:
-        raise Exception(f"insert_file_recordでエラーが発生しました: {e}")
+def insert_file_record(email, file_name):
+    rows_to_insert = [
+        {
+            'user_email': email,
+            'file_name': file_name,
+            'upload_time': datetime.now().isoformat()
+        }
+    ]
+    table_id = f'{dataset_name}.{file_table}'
+    errors = bigquery_client.insert_rows_json(table_id, rows_to_insert)
+    if errors:
+        raise Exception(f'BigQueryへのファイル情報挿入中にエラーが発生しました: {errors}')
 
 # def get_user_files(email):
 #     query = f"""
