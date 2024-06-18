@@ -111,28 +111,20 @@ def insert_file_record(email, filename):
         raise Exception(errors)
 
 def get_user_files(email):
-    bigquery_client = bigquery.Client()
-    dataset_name = 'my-project-sample-425203.dataset'
-    file_table = 'user_files'
     query = f"""
-        SELECT filename
-        FROM `{dataset_name}.{file_table}`
-        WHERE email = '{email}'
+    SELECT file_name, upload_time FROM `{dataset_name}.{file_table}`
+    WHERE user_email = '{email}'
+    ORDER BY upload_time DESC
     """
-
     query_job = bigquery_client.query(query)
     results = query_job.result()
 
-    storage_client = storage.Client()
-    bucket_name = 'txt_submit'
-    bucket = storage_client.bucket(bucket_name)
-
     files = []
     for row in results:
-        blob = bucket.blob(row.filename)
+        blob = bucket.blob(row['file_name'])
         files.append({
-            'name': row.filename.split('/')[-1],
-            'url': blob.generate_signed_url(expiration=datetime.timedelta(hours=1))
+            'name': row['file_name'].split('/')[-1],
+            'url': blob.generate_signed_url(expiration=datetime.timedelta(hours=1)),
+            'upload_time': row['upload_time']
         })
-
     return files
