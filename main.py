@@ -88,9 +88,9 @@ def main():
 
     try:
         email = session['email']
-        print(email)
-        files = utils.get_user_files(email)
-        print(files)
+        # print(email)
+        # files = utils.get_user_files(email)
+        # print(files)
         return 'kon'
         # return render_template('main.html', files=files)
     except Exception as e:
