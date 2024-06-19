@@ -89,10 +89,10 @@ def main():
     try:
         email = session['email']
         # print(email)
-        # files = utils.get_user_files(email)
+        files = utils.get_user_files(email)
         # print(files)
-        return 'kon'
-        # return render_template('main.html', files=files)
+        # return 'kon'
+        return render_template('main.html', files=files)
     except Exception as e:
         app.logger.error(f"メインページの読み込み中にエラーが発生しました: {e}")
         return "エラーが発生しました", 500
