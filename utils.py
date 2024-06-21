@@ -144,7 +144,7 @@ def get_user_files(email):
 
         files = []
         for row in results:
-            # blob = bucket.blob(row['file_name'])
+            blob = bucket.blob(row['file_name'])
             files.append({
                 'name': row['file_name'].split('/')[-1],
                 # 'url': blob.generate_signed_url(expiration=timedelta(hours=1), version='v4'),
