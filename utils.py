@@ -130,8 +130,8 @@ def insert_file_record(email, file_name):
 
 def get_user_files(email):
     # ストレージクライアントを初期化
-    client = storage.Client()
-    bucket = client.bucket(bucket_name)
+    # client = storage.Client()
+    # bucket = client.bucket(bucket_name)
 
     try:
         query = f"""
