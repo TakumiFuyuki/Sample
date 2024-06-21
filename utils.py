@@ -139,6 +139,7 @@ def get_user_files(email):
         results = query_job.result()
 
         files = []
+        test = []
         for row in results:
             blob = bucket.blob(row['file_name'])
             files.append({
@@ -146,6 +147,6 @@ def get_user_files(email):
                 'url': blob.generate_signed_url(expiration=timedelta(hours=1), version='v4'),
                 'upload_time': row['upload_time']
             })
-        return files
+        return test
     except Exception as e:
         raise Exception(f"get_user_filesでエラーが発生しました: {e}")
