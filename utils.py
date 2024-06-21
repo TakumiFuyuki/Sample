@@ -129,6 +129,10 @@ def insert_file_record(email, file_name):
 #     return files
 
 def get_user_files(email):
+    # ストレージクライアントを初期化
+    client = storage.Client()
+    bucket = client.bucket(bucket_name)
+
     try:
         query = f"""
         SELECT file_name, upload_time FROM `{dataset_name}.{file_table}`
@@ -139,13 +143,13 @@ def get_user_files(email):
         results = query_job.result()
 
         files = []
-        # for row in results:
-        #     blob = bucket.blob(row['file_name'])
-        #     files.append({
-        #         'name': row['file_name'].split('/')[-1],
-        #         'url': blob.generate_signed_url(expiration=timedelta(hours=1), version='v4'),
-        #         'upload_time': row['upload_time']
-        #     })
+        for row in results:
+            blob = bucket.blob(row['file_name'])
+            files.append({
+                'name': row['file_name'].split('/')[-1],
+                'url': blob.generate_signed_url(expiration=timedelta(hours=1), version='v4'),
+                'upload_time': row['upload_time']
+            })
         return files
     except Exception as e:
         raise Exception(f"get_user_filesでエラーが発生しました: {e}")
