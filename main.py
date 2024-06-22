@@ -39,19 +39,6 @@ def registration():
         return redirect(url_for('login'))
     return render_template('registration.html')
 
-# @app.route('/login', methods=['GET', 'POST'])
-# def login():
-#     if request.method == 'POST':
-#         email = request.form['email']
-#         password = request.form['password']
-#         if not utils.authenticate_user(email, password):
-#             flash('メールアドレスかパスワードが異なります。')
-#             return redirect(url_for('login'))
-#         else:
-#             session['logged_in'] = True
-#             return redirect(url_for('main'))
-#     return render_template('login.html')
-
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
@@ -66,21 +53,6 @@ def login():
             return redirect(url_for('main'))
     return render_template('login.html')
 
-# @app.route('/main', methods=['GET'])
-# def main():
-#     if not session.get('logged_in'):
-#         return redirect(url_for('login'))
-#     return render_template('main.html')
-
-# @app.route('/main', methods=['GET'])
-# def main():
-#     if not session.get('logged_in'):
-#         return redirect(url_for('login'))
-
-#     email = session['email']
-#     files = utils.get_user_files(email)
-#     return render_template('main.html', files=files)
-
 @app.route('/main', methods=['GET'])
 def main():
     if not session.get('logged_in'):
@@ -88,10 +60,7 @@ def main():
 
     try:
         email = session['email']
-        # print(email)
         files = utils.get_user_files(email)
-        # print(files)
-        # return 'kon'
         return render_template('main.html', files=files)
     except Exception as e:
         app.logger.error(f"メインページの読み込み中にエラーが発生しました: {e}")
@@ -115,11 +84,6 @@ def upload_file():
     utils.insert_file_record(email, filename)
     flash('ファイルがアップロードされました。')
     return redirect(url_for('main'))
-
-# @app.route('/logout', methods=['GET'])
-# def logout():
-#     session.pop('logged_in', None)
-#     return redirect(url_for('index'))
 
 @app.route('/logout', methods=['GET'])
 def logout():
