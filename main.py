@@ -13,7 +13,7 @@ app.secret_key = 'your_secret_key_here'
 
 # TODO(developer): Set key_path to the path to the service account key
 #                  file.
-key_path = "C:\Users\taku0\OneDrive - 中央大学\デスクトップ\task\Sample\auth_app.json"
+key_path = "C:\\Users\\taku0\\OneDrive - 中央大学\\デスクトップ\\task\\Sample\\auth_app.json"
 
 credentials = service_account.Credentials.from_service_account_file(
     key_path,
