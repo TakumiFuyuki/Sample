@@ -11,7 +11,7 @@ import os
 # credentials_path = os.getenv('GOOGLE_APPLICATION_CREDENTIALS')
 # credentials = service_account.Credentials.from_service_account_file(credentials_path)
 
-bigquery_client = bigquery.Client(credentials=credentials)
+bigquery_client = bigquery.Client()
 storage_client = storage.Client()
 
 dataset_name = 'my-project-sample-425203.dataset'
