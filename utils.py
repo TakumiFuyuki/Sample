@@ -7,9 +7,7 @@ import re
 from google.oauth2 import service_account
 import os
 
-# # サービスアカウントのキーのパスを設定
-# credentials_path = os.getenv('GOOGLE_APPLICATION_CREDENTIALS')
-# credentials = service_account.Credentials.from_service_account_file(credentials_path)
+
 
 bigquery_client = bigquery.Client()
 storage_client = storage.Client()
@@ -103,6 +101,13 @@ def insert_file_record(email, file_name):
         raise Exception(f'BigQueryへのファイル情報挿入中にエラーが発生しました: {errors}')
 
 def get_user_files(email):
+
+    # サービスアカウントのキーのパスを設定
+    credentials_path = os.getenv('GOOGLE_APPLICATION_CREDENTIALS')
+    credentials = service_account.Credentials.from_service_account_file(credentials_path)
+
+    client = storage.Client(credentials=credentials)
+    bucket = client.get_bucket(bucket_name)
 
     query = f"""
     SELECT file_name, upload_time FROM `{dataset_name}.{file_table}`
