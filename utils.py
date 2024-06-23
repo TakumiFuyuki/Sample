@@ -96,23 +96,21 @@ def insert_file_record(email, file_name):
         raise Exception(f'BigQueryへのファイル情報挿入中にエラーが発生しました: {errors}')
 
 def get_user_files(email):
-    try:
-        query = f"""
-        SELECT file_name, upload_time FROM `{dataset_name}.{file_table}`
-        WHERE user_email = '{email}'
-        ORDER BY upload_time DESC
-        """
-        query_job = bigquery_client.query(query)
-        results = query_job.result()
 
-        files = []
-        for row in results:
-            blob = bucket.blob(row['file_name'])
-            files.append({
-                'name': row['file_name'].split('/')[-1],
-                'url': blob.generate_signed_url(expiration=timedelta(hours=1), version='v4'),
-                'upload_time': row['upload_time']
-            })
-        return files
-    except Exception as e:
-        raise Exception(f"get_user_filesでエラーが発生しました: {e}")
+    query = f"""
+    SELECT file_name, upload_time FROM `{dataset_name}.{file_table}`
+    WHERE user_email = '{email}'
+    ORDER BY upload_time DESC
+    """
+    query_job = bigquery_client.query(query)
+    results = query_job.result()
+
+    files = []
+    for row in results:
+        blob = bucket.blob(row['file_name'])
+        files.append({
+            'name': row['file_name'].split('/')[-1],
+            'url': blob.generate_signed_url(expiration=timedelta(hours=1), version='v4'),
+            'upload_time': row['upload_time']
+        })
+    return files

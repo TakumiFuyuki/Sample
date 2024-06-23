@@ -69,13 +69,9 @@ def main():
     if not session.get('logged_in'):
         return redirect(url_for('login'))
 
-    try:
-        email = session['email']
-        files = utils.get_user_files(email)
-        return render_template('main.html', files=files)
-    except Exception as e:
-        app.logger.error(f"メインページの読み込み中にエラーが発生しました: {e}")
-        return "エラーが発生しました", 500
+    email = session['email']
+    files = utils.get_user_files(email)
+    return render_template('main.html', files=files)
 
 @app.route('/upload', methods=['POST'])
 def upload_file():
