@@ -7,9 +7,9 @@ import re
 from google.oauth2 import service_account
 import os
 
-# サービスアカウントのキーのパスを設定
-credentials_path = os.getenv('GOOGLE_APPLICATION_CREDENTIALS')
-credentials = service_account.Credentials.from_service_account_file(credentials_path)
+# # サービスアカウントのキーのパスを設定
+# credentials_path = os.getenv('GOOGLE_APPLICATION_CREDENTIALS')
+# credentials = service_account.Credentials.from_service_account_file(credentials_path)
 
 bigquery_client = bigquery.Client(credentials=credentials)
 storage_client = storage.Client()
