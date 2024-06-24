@@ -109,7 +109,7 @@ def get_user_files(email):
     # サービスアカウントのキーのパスを設定
     # credentials = service_account.Credentials.from_service_account_file('auth_app.json')
 
-    service_account_file_path = os.getenv("C:\\Users\\taku0\\OneDrive - 中央大学\\デスクトップ\\task\\Sample\\auth_app.json", "")
+    service_account_file_path = os.getenv("C:\\Users\\taku0\\OneDrive - 中央大学\\デスクトップ\\task\\Sample\\auth_app.json"    )
     credentials = service_account.Credentials.from_service_account_file(service_account_file_path)
 
     client = storage.Client(credentials=credentials)
