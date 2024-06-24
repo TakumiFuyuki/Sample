@@ -103,7 +103,7 @@ def insert_file_record(email, file_name):
 def get_user_files(email):
 
     # サービスアカウントのキーのパスを設定
-    credentials_path = "C:\Users\taku0\OneDrive - 中央大学\デスクトップ\task\Sample\auth_app.json"
+    credentials_path = "C:\\Users\\taku0\\OneDrive - 中央大学\\デスクトップ\\task\\Sample\\auth_app.json"
     credentials = service_account.Credentials.from_service_account_file(credentials_path)
 
     client = storage.Client(credentials=credentials)
