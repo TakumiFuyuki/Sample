@@ -106,8 +106,10 @@ def get_user_files(email):
     # credentials_path = "C:\\Users\\taku0\\OneDrive - 中央大学\\デスクトップ\\task\\Sample\\auth_app.json"
     # credentials = service_account.Credentials.from_service_account_file(credentials_path)
 
-    # client = storage.Client(credentials=credentials)
-    client = storage.Client()
+    # サービスアカウントのキーのパスを設定
+    credentials = service_account.Credentials.from_service_account_file('auth_app.json')
+
+    client = storage.Client(credentials=credentials)
     bucket = client.get_bucket(bucket_name)
 
     query = f"""
@@ -123,7 +125,7 @@ def get_user_files(email):
         blob = bucket.blob(row['file_name'])
         files.append({
             'name': row['file_name'].split('/')[-1],
-            # 'url': blob.generate_signed_url(expiration=timedelta(hours=1), version='v4'),
+            'url': blob.generate_signed_url(expiration=timedelta(hours=1), version='v4'),
             'upload_time': row['upload_time']
         })
     return files
