@@ -6,6 +6,6 @@ entrypoint: gunicorn -b :$PORT main:app
 env_variables:
   GOOGLE_APPLICATION_CREDENTIALS: C:\Users\taku0\OneDrive - 中央大学\デスクトップ\task\Sample\auth_app.json
 
-handlers:
-- url: /.*
-  script: auto
+# handlers:
+# - url: /.*
+#   script: auto
